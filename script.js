@@ -1,7 +1,13 @@
+const { uniqueSort } = require("jquery");
+
 class List {
   constructor(name) {
     this.name = name;
     this.books = [];
+  }
+
+  addBook(title, author, genre) {
+    this.books.push(new Book(title, author, genre));
   }
 }
 
@@ -14,7 +20,8 @@ class Book {
 }
 
 class ListService {
-  static url = "https://crudcrud.com/api/4cd1fe36b8b046b6adacffb7d72e8110";
+  static url =
+    "https://crudcrud.com/api/4cd1fe36b8b046b6adacffb7d72e8110/lists";
 
   static getAllLists() {
     return $.get(this.url);
@@ -37,4 +44,88 @@ class ListService {
       type: "PUT",
     });
   }
+
+  static deleteList(id) {
+    return $.ajax({
+      url: this.url + `/${id}`,
+      type: "DELETE",
+    });
+  }
 }
+
+class UI {
+  static lists;
+
+  static getAllLists() {
+    ListService.getAllLists().then((lists) => this.render(lists));
+  }
+
+  static createList(name) {
+    ListService.createList(new List(name))
+      .then(() => {
+        return ListService.getAllLists();
+      })
+      .then((lists) => this.render(lists));
+  }
+
+  static deleteList(id) {
+    ListService.deleteList(id)
+      .then(() => {
+        return ListService.getAllLists();
+      })
+      .then((lists) => this.render(lists));
+  }
+
+  static render(lists) {
+    this.lists = lists;
+    $("#app").empty();
+    for (let list of lists) {
+      $("#app").prepend(
+        `
+        <div id="${list._id}" class="card mt-3">
+          <div class="card-header">
+            <h2>${list.name}</h2>
+            <button class="btn btn-danger" onclick="UI.deleteList('${list._id}')">Delete</button>
+          </div>
+          <div class="card-body">
+            <div class="card">
+              <div class="row">
+                <div class="col-sm">
+                  <input type="text" id="${list._id}-title" class="form-control" placeholder="Title">
+                </div>
+                <div class="col-sm ">
+                  <input type="text" id="${list._id}-author" class="form-control" placeholder="Author">
+                </div>
+                <div class="col-sm ">
+                  <input type="text" id="${list._id}-Genre" class="form-control" placeholder="Genre">
+                </div>
+              </div>
+            </div>
+            <button id="${list._id}-new-book" onclick="UI.addBook('${list._id}')" class="btn btn-primary form-control mt-3">Add Book</button>
+        </div>
+        </div>
+        `
+      );
+      for (let book of list.books) {
+        $(`#${list._id}`)
+          .find(".card-body")
+          .append(
+            `
+          <p>
+          <span id="title-${book._id}"><strong>Title: </strong> ${book.title}</span>
+          <span id="author-${book._id}"><strong>Author: </strong> ${book.author}</span>
+          <span id="genre-${book._id}"><strong>Genre: </strong> ${book.genre}</span>
+          <button class="btn btn-danger" onclick="DOMManager.deletebook('${list._id}', '${book._id}')">Delete book</button>
+          `
+          );
+      }
+    }
+  }
+}
+
+$("#create-new-list").click(() => {
+  UI.createList($("#book-list-name").val());
+  $("#book-list-name").val("");
+});
+
+UI.getAllLists();
