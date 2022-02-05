@@ -43,12 +43,12 @@ class ListService {
   }
 
   static updateList(list) {
-    // const listId = list._id;
-    // delete list._id;
+    const listId = list._id;
+    delete list._id;
 
     return $.ajax({
       type: "PUT",
-      url: `${this.url}/${list._id}`,
+      url: `${this.url}/${listId}`,
       data: JSON.stringify(list),
       contentType: "application/json",
       // dataType: "json",
@@ -126,7 +126,7 @@ class UI {
                   <input type="text" id="${list._id}-author" class="form-control" placeholder="Author">
                 </div>
                 <div class="col-sm ">
-                  <input type="text" id="${list._id}-Genre" class="form-control" placeholder="Genre">
+                  <input type="text" id="${list._id}-genre" class="form-control" placeholder="Genre">
                 </div>
               </div>
             </div>
