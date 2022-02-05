@@ -105,6 +105,23 @@ class UI {
     }
   }
 
+  static deleteBook(listId, bookId) {
+    for (let list of this.lists) {
+      if (list._id == listId) {
+        for (let book of list.books) {
+          if (book._id == bookId) {
+            list.books.splice(list.books.indexOf(book), 1);
+            ListService.updateHouse(list)
+              .then(() => {
+                return ListService.getAllLists();
+              })
+              .then((lists) => this.render(lists));
+          }
+        }
+      }
+    }
+  }
+
   static render(lists) {
     this.lists = lists;
     $("#app").empty();
@@ -144,7 +161,7 @@ class UI {
           <span id="title-${book._id}"><strong>Title: </strong> ${book.title}</span>
           <span id="author-${book._id}"><strong>Author: </strong> ${book.author}</span>
           <span id="genre-${book._id}"><strong>Genre: </strong> ${book.genre}</span>
-          <button class="btn btn-danger" onclick="UI.deletebook('${list._id}', '${book._id}')">Delete book</button>
+          <button class="btn btn-danger" onclick="UI.deleteBook('${list._id}', '${book._id}')">Delete book</button>
           `
           );
       }
