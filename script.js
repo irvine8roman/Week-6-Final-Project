@@ -111,7 +111,7 @@ class UI {
         for (let book of list.books) {
           if (book._id == bookId) {
             list.books.splice(list.books.indexOf(book), 1);
-            ListService.updateHouse(list)
+            ListService.updateList(list)
               .then(() => {
                 return ListService.getAllLists();
               })
@@ -130,8 +130,14 @@ class UI {
         `
         <div id="${list._id}" class="card mt-3">
           <div class="card-header">
-            <h2>${list.name}</h2>
-            <button class="btn btn-danger" onclick="UI.deleteList('${list._id}')">Delete</button>
+            <div class="row">
+              <div class="col-8">
+                <h2>${list.name}</h2>
+              </div>
+              <div class="col-4 d-grid">
+                <button class="btn btn-danger" onclick="UI.deleteList('${list._id}')">Delete</button>
+              </div>
+            </div>
           </div>
           <div class="card-body">
             <div class="card">
@@ -152,12 +158,13 @@ class UI {
         </div>
         `
       );
+
       for (let book of list.books) {
         $(`#${list._id}`)
           .find(".card-body")
           .append(
             `
-          <p>
+          <p class="mt-3">
           <span id="title-${book._id}"><strong>Title: </strong> ${book.title}</span>
           <span id="author-${book._id}"><strong>Author: </strong> ${book.author}</span>
           <span id="genre-${book._id}"><strong>Genre: </strong> ${book.genre}</span>
