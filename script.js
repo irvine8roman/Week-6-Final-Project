@@ -144,7 +144,7 @@ class UI {
           <span id="title-${book._id}"><strong>Title: </strong> ${book.title}</span>
           <span id="author-${book._id}"><strong>Author: </strong> ${book.author}</span>
           <span id="genre-${book._id}"><strong>Genre: </strong> ${book.genre}</span>
-          <button class="btn btn-danger" onclick="DOMManager.deletebook('${list._id}', '${book._id}')">Delete book</button>
+          <button class="btn btn-danger" onclick="UI.deletebook('${list._id}', '${book._id}')">Delete book</button>
           `
           );
       }
