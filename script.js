@@ -1,5 +1,3 @@
-const { uniqueSort } = require("jquery");
-
 class List {
   constructor(name) {
     this.name = name;
@@ -32,16 +30,28 @@ class ListService {
   }
 
   static createList(list) {
-    return $.post(this.url, list);
+    return $.ajax({
+      type: "POST",
+      url: this.url,
+      data: JSON.stringify(list),
+      contentType: "application/json",
+    });
+
+    // return $.post(this.url, list, (data) => console.log(data));
+
+    // return $.post(this.url, list);
   }
 
   static updateList(list) {
+    // const listId = list._id;
+    // delete list._id;
+
     return $.ajax({
-      url: this.url + `/${list._id}`,
-      dataType: "json",
+      type: "PUT",
+      url: `${this.url}/${list._id}`,
       data: JSON.stringify(list),
       contentType: "application/json",
-      type: "PUT",
+      // dataType: "json",
     });
   }
 
@@ -74,6 +84,25 @@ class UI {
         return ListService.getAllLists();
       })
       .then((lists) => this.render(lists));
+  }
+
+  static addBook(id) {
+    for (let list of this.lists) {
+      if (list._id == id) {
+        list.books.push(
+          new Book(
+            $(`#${list._id}-title`).val(),
+            $(`#${list._id}-author`).val(),
+            $(`#${list._id}-genre`).val()
+          )
+        );
+        ListService.updateList(list)
+          .then(() => {
+            return ListService.getAllLists();
+          })
+          .then((lists) => this.render(lists));
+      }
+    }
   }
 
   static render(lists) {
@@ -129,3 +158,8 @@ $("#create-new-list").click(() => {
 });
 
 UI.getAllLists();
+
+// $.get(
+//   "https://crudcrud.com/api/4cd1fe36b8b046b6adacffb7d72e8110/unicorns",
+//   (data) => console.log(data)
+// );
