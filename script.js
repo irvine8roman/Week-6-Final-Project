@@ -105,12 +105,24 @@ class UI {
     }
   }
 
-  static deleteBook(listId, bookId) {
+  static deleteBook(listId, bookTitle, bookGenre) {
     for (let list of this.lists) {
       if (list._id == listId) {
         for (let book of list.books) {
-          if (book._id == bookId) {
-            list.books.splice(list.books.indexOf(book), 1);
+          if (book.title == bookTitle && book.genre == bookGenre) {
+            //////
+            let index = null;
+
+            for (let i = 0; i < list.books.length; i++) {
+              if (list.books[i].title == bookTitle) {
+                index = i;
+                break;
+              }
+            }
+            console.log(index);
+
+            /////
+            list.books.splice(index, 1);
             ListService.updateList(list)
               .then(() => {
                 return ListService.getAllLists();
@@ -165,10 +177,10 @@ class UI {
           .append(
             `
           <p class="mt-3">
-          <span id="title-${book._id}"><strong>Title: </strong> ${book.title}</span>
-          <span id="author-${book._id}"><strong>Author: </strong> ${book.author}</span>
-          <span id="genre-${book._id}"><strong>Genre: </strong> ${book.genre}</span>
-          <button class="btn btn-danger" onclick="UI.deleteBook('${list._id}', '${book._id}')">Delete book</button>
+          <span id="title-${book.title}"><strong>Title: </strong> ${book.title}</span>
+          <span id="author-${book.title}"><strong>Author: </strong> ${book.author}</span>
+          <span id="genre-${book.title}"><strong>Genre: </strong> ${book.genre}</span>
+          <button class="btn btn-danger" onclick="UI.deleteBook('${list._id}', '${book.title}', '${book.genre}')">Delete book</button>
           `
           );
       }
