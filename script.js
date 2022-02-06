@@ -111,6 +111,8 @@ class UI {
         for (let book of list.books) {
           if (book.title == bookTitle && book.genre == bookGenre) {
             //////
+
+            //  Couldn't figure out how to properly find the index of a book without an ID. I found something on Stack Overflow that suggested this and suree enough it worked. - Irvine
             let index = null;
 
             for (let i = 0; i < list.books.length; i++) {
